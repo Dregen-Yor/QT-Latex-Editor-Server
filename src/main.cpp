@@ -25,15 +25,16 @@ namespace {
 
 class KFTEXHandlerFactory : public RequestHandlerFactory {
    public:
-    void onServerStart(folly::EventBase* /*evb*/) noexcept override {std::cout << "Hello,!?" << std::endl;}
+    void onServerStart(folly::EventBase* /*evb*/) noexcept override {}
 
     void onServerStop() noexcept override {}
 
     RequestHandler *onRequest(RequestHandler*,HTTPMessage* message) noexcept override {
-        std::cout << "Hello, World!?" << std::endl;
         if (message->getPath() == "/compile") {
+            LOG(INFO)<< "编译pdf文件";
             return new compilHandler();
         } else {
+            LOG(INFO)<<"Page Not Found";
             return new DirectResponseHandler(404, "Not Found",
                                              "Page not found");
         }
@@ -46,22 +47,22 @@ int main(int argc, char* argv[]) {
     
     
     folly::init(&argc, &argv, true);
-
+    FLAGS_logtostderr =1;
     std::vector<HTTPServer::IPConfig> IPs = {
         {folly::SocketAddress(FLAGS_ip, FLAGS_http_port, true),
          HTTPServer::Protocol::HTTP},
          {folly::SocketAddress(FLAGS_ip, FLAGS_http2_port, true),HTTPServer::Protocol::HTTP2}
     };
 
-    // if (FLAGS_threads <= 0) {
-    //     FLAGS_threads = sysconf(_SC_NPROCESSORS_ONLN);
-    //     CHECK_GT(FLAGS_threads, 0);
-    // }
+    if (FLAGS_threads <= 0) {
+        FLAGS_threads = sysconf(_SC_NPROCESSORS_ONLN);
+        CHECK_GT(FLAGS_threads, 0);
+    }
     HTTPServerOptions options;
-    options.threads = static_cast<size_t>(sysconf(_SC_NPROCESSORS_ONLN));
+    options.threads = static_cast<size_t>(FLAGS_threads);
     options.idleTimeout = std::chrono::milliseconds(60000);
     options.shutdownOn = {SIGINT, SIGTERM};
-    options.enableContentCompression = false;
+    options.enableContentCompression = true;
     options.h2cEnabled = true;
     options.handlerFactories =
         RequestHandlerChain().addThen<KFTEXHandlerFactory>().build();
@@ -74,6 +75,7 @@ int main(int argc, char* argv[]) {
     // // Start HTTPServer mainloop in a separate thread
     std::thread t([&]() { server.start(); });
     t.join();
-    std::cout << "Hello, World!" << std::endl;
+    LOG(INFO) << "Sever closed";
+    google::ShutdownGoogleLogging();
     return 0;
 }

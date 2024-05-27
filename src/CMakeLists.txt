@@ -3,4 +3,5 @@ add_executable(${PROJECT_NAME} ${DIR_LIB_SRCS})
 target_link_libraries(${PROJECT_NAME} PUBLIC proxygen::proxygen proxygen::proxygenhttpserver
 mvfst::mvfst_transport
 mvfst::mvfst_client
-mvfst::mvfst_server)
+mvfst::mvfst_server
+nlohmann_json::nlohmann_json)
