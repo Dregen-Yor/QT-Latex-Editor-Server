@@ -7,9 +7,11 @@
 #include <atomic>
 
 #include <glog/logging.h>
+#include <memory>
 #include <iostream>
 
 #include "utils/compilHandler.h"
+#include "utils/dbCon.h"
 using namespace proxygen;
 using folly::SocketAddress;
 
@@ -32,19 +34,19 @@ class KFTEXHandlerFactory : public RequestHandlerFactory {
     RequestHandler *onRequest(RequestHandler*,HTTPMessage* message) noexcept override {
         if (message->getPath() == "/compile") {
             LOG(INFO)<< "编译pdf文件";
-            return new compilHandler();
+            return new compilHandler(c);
         } else {
             LOG(INFO)<<"Page Not Found";
             return new DirectResponseHandler(404, "Not Found",
                                              "Page not found");
         }
     }
+private:
+    std::shared_ptr<dbconnect> c=std::make_shared<dbconnect>();
 };
 
 }  // namespace
 int main(int argc, char* argv[]) {
-    
-    
     
     folly::init(&argc, &argv, true);
     FLAGS_logtostderr =1;

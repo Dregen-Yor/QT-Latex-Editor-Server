@@ -14,9 +14,9 @@ find_package(proxygen REQUIRED)
 find_package(gflags REQUIRED)  # From the common CMake/
 find_package(glog REQUIRED)  # From the common CMake/
 
-find_package(nlohmann_json REQUIRED)
+find_package(nlohmann_json  REQUIRED)
 message(STATUS "proxygen lib path: ${proxygen_INCLUDE_DIRECTORIES}")
-
+include_directories(/usr/local/include/mariadb/)
 get_cmake_property(_variableNames VARIABLES)
 list (SORT _variableNames)
 foreach (_variableName ${_variableNames})

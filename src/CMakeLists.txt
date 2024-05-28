@@ -4,4 +4,4 @@ target_link_libraries(${PROJECT_NAME} PUBLIC proxygen::proxygen proxygen::proxyg
 mvfst::mvfst_transport
 mvfst::mvfst_client
 mvfst::mvfst_server
-nlohmann_json::nlohmann_json)
+nlohmann_json::nlohmann_json /usr/local/lib/mariadb/libmariadbcpp.so)

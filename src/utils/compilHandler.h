@@ -7,7 +7,9 @@
 #include <glog/logging.h>
 #include <nlohmann/json.hpp>
 #include <folly/base64.h>
+#include "dbCon.h"
 #include <string>
+class dbconnect;
 class compilHandler :public proxygen::RequestHandler{
 public:
     void onRequest(std::unique_ptr<proxygen::HTTPMessage> headers) noexcept override;
@@ -16,7 +18,9 @@ public:
     void onUpgrade(proxygen::UpgradeProtocol prot) noexcept override;
     void requestComplete() noexcept override;
     void onError(proxygen::ProxygenError err) noexcept override;
+    compilHandler(std::shared_ptr<dbconnect> m);
 private:
     std::string Jsondata;
+    std::shared_ptr<dbconnect> c;
 };
 #endif
