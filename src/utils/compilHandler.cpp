@@ -20,13 +20,13 @@ void compilHandler::onEOM()noexcept{
         std::string fname=f["filename"];
         std::string fdata=f["filedata"];
         c->insert(fname,fdata);
-        std::ofstream outFile(fname+".tex",std::ios::trunc);
+        std::ofstream outFile("/texdir/"+fname+".tex",std::ios::trunc);
         outFile<< fdata;
         outFile.close();
-        std::string command ="latexmk -xelatex  -halt-on-error "+fname+".tex";
+        std::string command ="latexmk -xelatex  -halt-on-error -outdir=/pdfdir /texdir/"+fname+".tex";
         int result = std::system(command.c_str());
         if(result==0){
-            std::ifstream pdf(fname+".pdf",std::ios::binary);
+            std::ifstream pdf("/pdfdir/"+fname+".pdf",std::ios::binary);
             std::stringstream buffer;
             buffer << pdf.rdbuf();
             proxygen::ResponseBuilder(downstream_)
@@ -49,8 +49,6 @@ void compilHandler::onEOM()noexcept{
         .body("编译错误")
         .sendWithEOM();
     };
-
-    
 }
 
 void compilHandler::onUpgrade(proxygen::UpgradeProtocol prot)noexcept{

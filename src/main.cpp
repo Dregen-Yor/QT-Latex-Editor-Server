@@ -11,6 +11,7 @@
 #include <iostream>
 
 #include "utils/compilHandler.h"
+#include "utils/queryallHandler.h"
 #include "utils/dbCon.h"
 using namespace proxygen;
 using folly::SocketAddress;
@@ -24,7 +25,6 @@ DEFINE_int32(threads,
              "Number of threads to listen on. Numbers <= 0 "
              "will use the number of cores on this machine.");
 namespace {
-
 class KFTEXHandlerFactory : public RequestHandlerFactory {
    public:
     void onServerStart(folly::EventBase* /*evb*/) noexcept override {}
@@ -35,7 +35,11 @@ class KFTEXHandlerFactory : public RequestHandlerFactory {
         if (message->getPath() == "/compile") {
             LOG(INFO)<< "编译pdf文件";
             return new compilHandler(c);
-        } else {
+        }else if(message->getPath() == "/queryall") {
+            LOG(INFO)<<"查询所有pdf文件";
+            return new MqueryallHandler(c);
+        }
+        else {
             LOG(INFO)<<"Page Not Found";
             return new DirectResponseHandler(404, "Not Found",
                                              "Page not found");

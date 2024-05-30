@@ -3,6 +3,7 @@
 #include <conncpp.hpp>
 #include <string>
 #include <iostream>
+#include <folly/FBVector.h>
 class dbconnect{
 
 private:
@@ -14,6 +15,8 @@ public:
     dbconnect();
     ~dbconnect();
     void insert(std::string name,std::string content);
+    folly::fbvector<sql::SQLString> queryall();
+    sql::SQLString query(std::string name);
 };
 
 #endif
