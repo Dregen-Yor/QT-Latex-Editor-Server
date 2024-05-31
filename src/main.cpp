@@ -12,6 +12,7 @@
 
 #include "utils/compilHandler.h"
 #include "utils/queryallHandler.h"
+#include "utils/queryHandler.h"
 #include "utils/dbCon.h"
 using namespace proxygen;
 using folly::SocketAddress;
@@ -38,6 +39,9 @@ class KFTEXHandlerFactory : public RequestHandlerFactory {
         }else if(message->getPath() == "/queryall") {
             LOG(INFO)<<"查询所有pdf文件";
             return new MqueryallHandler(c);
+        }else if(message->getPath()=="/query"){
+            LOG(INFO)<<"查询文件内容";
+            return new queryHandler(c);
         }
         else {
             LOG(INFO)<<"Page Not Found";

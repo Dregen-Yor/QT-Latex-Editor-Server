@@ -28,10 +28,12 @@ folly::fbvector<sql::SQLString> dbconnect::queryall(){
     folly::fbvector<sql::SQLString> res;
     try{
         std::unique_ptr<sql::Statement> stmt(c->createStatement());
-        std::unique_ptr<sql::ResultSet> resset(stmt->executeQuery("select * from file"));
+        std::unique_ptr<sql::ResultSet> resset(stmt->executeQuery("select * from file;"));
         while(resset->next()){
             res.push_back(resset->getString("name"));
+            std::cout<<"!!";
         }
+
     }catch(sql::SQLException &e){
         std::cout<<e.what();
     }

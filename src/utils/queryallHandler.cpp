@@ -9,15 +9,17 @@ void MqueryallHandler::onRequest(std::unique_ptr<proxygen::HTTPMessage> headers)
 }
 
 void MqueryallHandler::onBody(std::unique_ptr<folly::IOBuf> body)noexcept{
+    
+}
+
+void MqueryallHandler::onEOM()noexcept{
     folly::fbvector<sql::SQLString> query=c->queryall();
+    std::cout<<query[0]<<"?";
     std::vector<std::string> query1;
     for(auto i:query){
         query1.push_back(i.c_str());
     }
     Jsondata["allfile"]=query1;
-}
-
-void MqueryallHandler::onEOM()noexcept{
     proxygen::ResponseBuilder(downstream_)
             .status(200, "OK")
             .header("Content-Type", "application/json")
